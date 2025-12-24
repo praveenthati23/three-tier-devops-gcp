@@ -19,7 +19,7 @@ jobs:
       - name: Deploy UI to DEV App VM
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DEV_APP_IP }}
+          host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -30,7 +30,7 @@ jobs:
       - name: Deploy Backend to DEV Backend VM
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DEV_BACKEND_IP }}
+          host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
