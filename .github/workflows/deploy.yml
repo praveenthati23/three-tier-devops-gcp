@@ -40,7 +40,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           accept_host_keys: true
           script: |
-            ssh prawenkcumaar@${{ secrets.DEV_BACKEND_PRIVATE_IP }} << 'EOF'
+            ssh prawenkcumaar@${{ secrets.DEV_BACKEND_HOST }} << 'EOF'
               cd /home/prawenkcumaar/three-tier-devops-gcp/backend
               git pull origin dev
               npm install --production
