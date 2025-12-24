@@ -1,0 +1,75 @@
+name: CI-CD Dev to Staging
+
+on:
+  push:
+    branches:
+      - dev
+      - staging
+
+jobs:
+  # ---------------- DEV DEPLOY ----------------
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy UI to DEV App VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_APP_IP }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/prawenkcumaar/three-tier-devops-gcp
+            git pull origin dev
+            sudo systemctl reload nginx
+
+      - name: Deploy Backend to DEV Backend VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_BACKEND_IP }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/prawenkcumaar/three-tier-devops-gcp/backend
+            git pull origin dev
+            npm install --production
+            sudo systemctl restart backend
+
+
+  # ---------------- STAGING DEPLOY ----------------
+  deploy-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy UI to STAGING App VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_APP_IP }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/prawenkcumaar/three-tier-devops-gcp
+            git pull origin staging
+            sudo systemctl reload nginx
+
+      - name: Deploy Backend to STAGING Backend VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_BACKEND_IP }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/prawenkcumaar/three-tier-devops-gcp/backend
+            git pull origin staging
+            npm install --production
+            sudo systemctl restart backend
