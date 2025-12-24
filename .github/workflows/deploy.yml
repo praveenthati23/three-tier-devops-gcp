@@ -38,6 +38,7 @@ jobs:
           host: ${{ secrets.DEV_APP_HOST }}      # PUBLIC IP (BASTION)
           username: prawenkcumaar
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          accept_host_keys: true
           script: |
             ssh prawenkcumaar@${{ secrets.DEV_BACKEND_PRIVATE_IP }} << 'EOF'
               cd /home/prawenkcumaar/three-tier-devops-gcp/backend
