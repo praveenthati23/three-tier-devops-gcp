@@ -32,29 +32,19 @@ jobs:
             sudo systemctl reload nginx
 
       # ---------- BACKEND DEPLOY (VIA BASTION) ----------
-     - name: Deploy Backend to DEV Backend VM (via App VM Proxy)
+      - name: Deploy Backend to DEV Backend VM (via App VM)
         uses: appleboy/ssh-action@v1.0.3
         with:
-          # 👇 THIS IS YOUR TARGET (Backend VM Private IP)
-          host: ${{ secrets.DEV_BACKEND_HOST }} 
+          host: ${{ secrets.DEV_APP_HOST }}      # PUBLIC IP (BASTION)
           username: prawenkcumaar
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # accept_host_keys is removed for v1.0.3 compatibility
-          
-          # 👇 THIS IS YOUR BASTION (App VM Public IP)
-          proxy_host: ${{ secrets.DEV_APP_HOST }} 
-          proxy_port: 22
-          proxy_username: prawenkcumaar
-          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-          # 👇 SCRIPT: The commands run on the TARGET machine (Backend VM)
           script: |
-            # Remove the line 'ssh prawenkcumaar@${{ secrets.DEV_BACKEND_PRIVATE_IP }} << 'EOF''
-            cd /home/prawenkcumaar/three-tier-devops-gcp/backend
-            git pull origin dev
-            npm install --production
-            sudo systemctl restart backend
-            # Remove the closing 'EOF' line
+            ssh prawenkcumaar@${{ secrets.DEV_BACKEND_PRIVATE_IP }} << 'EOF'
+              cd /home/prawenkcumaar/three-tier-devops-gcp/backend
+              git pull origin dev
+              npm install --production
+              sudo systemctl restart backend
+            EOF
 
 
   # =========================
