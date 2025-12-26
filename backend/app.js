@@ -12,7 +12,7 @@ const pool = new Pool({
 
 app.get("/api/health", async (req, res) => {
   const r = await pool.query("SELECT now()");
-  res.json({ status: "ok", time: r.rows[0] });
+  res.json({ status: "good and ok", time: r.rows[0] });
 });
 
 app.listen(3000, () => console.log("Backend running on 3000"));
