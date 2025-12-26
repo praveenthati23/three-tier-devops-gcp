@@ -10,7 +10,7 @@ jobs:
   # =========================
   # DEV DEPLOYMENT
   # =========================
-  deploy-dev:
+  #deploy-dev:
     if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     environment: dev
@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       # ---------- UI DEPLOY (UNCHANGED & WORKING) ----------
-      - name: Deploy UI to DEV App VM
+      #- name: Deploy UI to DEV App VM
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DEV_APP_HOST }}      # PUBLIC IP
@@ -33,7 +33,7 @@ jobs:
 
       # ---------- BACKEND DEPLOY (VIA BASTION) ----------
             # ---------- BACKEND DEPLOY (FIXED VIA PROXY METHOD) ----------
-      - name: Deploy Backend to DEV Backend VM (via App VM Proxy)
+      #- name: Deploy Backend to DEV Backend VM (via App VM Proxy)
         uses: appleboy/ssh-action@v1.0.3
         with:
           # Target Host is the Backend VM's hostname/IP
@@ -59,7 +59,7 @@ jobs:
   # =========================
   # STAGING DEPLOYMENT
   # =========================
-  deploy-staging:
+  #deploy-staging:
     if: github.ref == 'refs/heads/staging'
     needs: deploy-dev
     runs-on: ubuntu-latest
@@ -70,7 +70,7 @@ jobs:
         uses: actions/checkout@v4
 
       # ---------- UI DEPLOY ----------
-      - name: Deploy UI to STAGING App VM
+      #- name: Deploy UI to STAGING App VM
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.STAGING_APP_HOST }}   # PUBLIC IP
@@ -82,7 +82,7 @@ jobs:
             sudo systemctl reload nginx
 
       # ---------- BACKEND DEPLOY (VIA BASTION) ----------
-      - name: Deploy Backend to STAGING Backend VM (via App VM)
+      #- name: Deploy Backend to STAGING Backend VM (via App VM)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.STAGING_APP_HOST }}   # PUBLIC IP (BASTION)
